@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="root">
+    <file>Assets/check-solid.svg</file>
+    <file>Assets/pen-to-square-solid.svg</file>
+    <file>Assets/trash-solid.svg</file>
+    <file>Assets/info.svg</file>
+  </qresource>
+</RCC>
