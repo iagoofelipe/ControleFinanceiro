@@ -12,8 +12,8 @@ class LoadingPage(QObject):
     def __init__(self, parent:QObject, model:ModelApp):
         super().__init__(parent, objectName='ViewApp')
         self.__model = model
-        self.__label = None
         self.__isCurrentPage = False
+        self.__label = None
 
         # conectando eventos
         model.eventHandler.view.currentPageChanged.connect(self.on_view_currentPageChanged)

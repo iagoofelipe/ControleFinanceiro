@@ -4,15 +4,27 @@ def generateId():
     __id += 1
     return __id
 
-# Pages
+# Ui Pages
 PAGE_ID_LOADING = generateId()
+PAGE_ID_LOGIN = generateId()
 PAGE_ID_HOME = generateId()
 PAGE_ID_REG = generateId()
 
-MAINWINDOW_PAGES = (PAGE_ID_HOME, PAGE_ID_REG)
+WINDOW_PAGES = (PAGE_ID_HOME, PAGE_ID_REG)
+WINDOW_TITLE = 'Controle Financeiro'
 
-# Table
+CRYPTO_KEY = "42333823303233455347532322493093"
+CONFIG_FILE = 'config.ini'
+CONFIG_FILE_VALUES = {'Login': {'username': '', 'password': '', 'remember': False}}
+
+# Ui Components - Table
 TABLE_HEADER_TITLE = generateId()
 TABLE_HEADER_EDIT = generateId()
 TABLE_HEADER_CONFIRM = generateId()
 TABLE_HEADER_DELETE = generateId()
+
+# Database
+DATABASE_HOST = 'localhost'
+DATABASE_USER = 'test'
+DATABASE_PASSWORD = '1234'
+DATABASE_SCHEMA = 'financeiro'

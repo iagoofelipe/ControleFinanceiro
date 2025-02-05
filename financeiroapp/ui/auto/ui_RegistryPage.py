@@ -66,49 +66,13 @@ class Ui_RegistryPage(object):
 
         self.gridLayout_2.addWidget(self.widHistorico, 2, 0, 1, 2)
 
-        self.frame_2 = QFrame(self.scrollAreaWidgetContents)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
-        self.verticalLayout = QVBoxLayout(self.frame_2)
-        self.verticalLayout.setSpacing(10)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(15, 15, 15, 15)
-        self.label_8 = QLabel(self.frame_2)
-        self.label_8.setObjectName(u"label_8")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
-        self.label_8.setSizePolicy(sizePolicy)
-        self.label_8.setFont(font)
-
-        self.verticalLayout.addWidget(self.label_8)
-
-        self.line_2 = QFrame(self.frame_2)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.Shape.HLine)
-        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
-
-        self.verticalLayout.addWidget(self.line_2)
-
-        self.frame_4 = QFrame(self.frame_2)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setFrameShape(QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QFrame.Sunken)
-
-        self.verticalLayout.addWidget(self.frame_4)
-
-
-        self.gridLayout_2.addWidget(self.frame_2, 0, 1, 1, 1)
-
         self.frame = QFrame(self.scrollAreaWidgetContents)
         self.frame.setObjectName(u"frame")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
-        self.frame.setSizePolicy(sizePolicy1)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
+        self.frame.setSizePolicy(sizePolicy)
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.gridLayout = QGridLayout(self.frame)
@@ -129,8 +93,8 @@ class Ui_RegistryPage(object):
 
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
-        sizePolicy1.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
 
         self.gridLayout.addWidget(self.label, 0, 0, 1, 2)
 
@@ -165,8 +129,11 @@ class Ui_RegistryPage(object):
 
         self.widget = QWidget(self.frame)
         self.widget.setObjectName(u"widget")
-        sizePolicy.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
+        self.widget.setSizePolicy(sizePolicy1)
         self.horizontalLayout = QHBoxLayout(self.widget)
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -234,9 +201,30 @@ class Ui_RegistryPage(object):
 
         self.gridLayout_2.addWidget(self.frame, 0, 0, 1, 1)
 
+        self.widAgendados = QFrame(self.scrollAreaWidgetContents)
+        self.widAgendados.setObjectName(u"widAgendados")
+        self.widAgendados.setFrameShape(QFrame.StyledPanel)
+        self.widAgendados.setFrameShadow(QFrame.Raised)
+        self.agendadosLayout = QVBoxLayout(self.widAgendados)
+        self.agendadosLayout.setSpacing(10)
+        self.agendadosLayout.setObjectName(u"agendadosLayout")
+        self.agendadosLayout.setContentsMargins(15, 15, 15, 15)
+        self.widAgendadosTable = QFrame(self.widAgendados)
+        self.widAgendadosTable.setObjectName(u"widAgendadosTable")
+        self.widAgendadosTable.setFrameShape(QFrame.StyledPanel)
+        self.widAgendadosTable.setFrameShadow(QFrame.Raised)
+        self.label_10 = QLabel(self.widAgendadosTable)
+        self.label_10.setObjectName(u"label_10")
+        self.label_10.setGeometry(QRect(30, 70, 341, 81))
+
+        self.agendadosLayout.addWidget(self.widAgendadosTable)
+
+
+        self.gridLayout_2.addWidget(self.widAgendados, 0, 1, 1, 1)
+
         self.gridLayout_2.setRowStretch(2, 1)
-        self.gridLayout_2.setColumnStretch(0, 1)
         self.gridLayout_2.setColumnStretch(1, 1)
+        self.gridLayout_2.setColumnMinimumWidth(0, 500)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
         self.gridLayout_3.addWidget(self.scrollArea, 0, 0, 1, 1)
@@ -249,10 +237,9 @@ class Ui_RegistryPage(object):
 
     def retranslateUi(self, RegistryPage):
         RegistryPage.setWindowTitle(QCoreApplication.translate("RegistryPage", u"Form", None))
-        self.label_9.setText(QCoreApplication.translate("RegistryPage", u"Registos Tabela", None))
-        self.label_8.setText(QCoreApplication.translate("RegistryPage", u"Registros Agendados", None))
+        self.label_9.setText(QCoreApplication.translate("RegistryPage", u"Hist\u00f3rico de Registros", None))
         self.label_5.setText(QCoreApplication.translate("RegistryPage", u"Conta Banc\u00e1ria", None))
-        self.label.setText(QCoreApplication.translate("RegistryPage", u"Cadastre Registros", None))
+        self.label.setText(QCoreApplication.translate("RegistryPage", u"Cadastro de Registros", None))
         self.doubleSpinBox.setPrefix(QCoreApplication.translate("RegistryPage", u"R$ ", None))
         self.label_3.setText(QCoreApplication.translate("RegistryPage", u"Valor", None))
         self.label_2.setText(QCoreApplication.translate("RegistryPage", u"T\u00edtulo", None))
@@ -270,5 +257,6 @@ class Ui_RegistryPage(object):
         self.spinBox.setSuffix(QCoreApplication.translate("RegistryPage", u" dia(s)", None))
         self.label_4.setText(QCoreApplication.translate("RegistryPage", u"Descri\u00e7\u00e3o", None))
         self.dateTimeEdit.setDisplayFormat(QCoreApplication.translate("RegistryPage", u"HH:mm dd/MM/yyyy", None))
+        self.label_10.setText(QCoreApplication.translate("RegistryPage", u"Registros Agendados", None))
     # retranslateUi
 

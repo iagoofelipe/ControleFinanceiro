@@ -1,10 +1,10 @@
 from PySide6.QtCore import QObject, Signal, Qt
 from PySide6.QtWidgets import QWidget
 
-from ..auto.ui_RegistryPage import Ui_RegistryPage
+from ...ui.auto.ui_RegistryPage import Ui_RegistryPage
 from ...backend._consts import *
 from ...models._model import ModelApp 
-from ..components._table import Table
+from ...ui.components._table import Table
 
 class RegistryPage(QObject):
     def __init__(self, parent:QObject, model:ModelApp):
@@ -19,13 +19,24 @@ class RegistryPage(QObject):
         self.__ui.setupUi(self.__wid)
 
         # Historico
-        self.__tableHistorico = Table(self.__ui.widHistorico, title='Registros', flags={TABLE_HEADER_DELETE})
+        self.__tableHistorico = Table(self.__ui.widHistorico, title='Histórico de Registros', flags={TABLE_HEADER_DELETE})
         wid_new = self.__tableHistorico
         wid_old = self.__ui.widHistoricoTable
         self.__ui.widHistoricoTable = wid_new
 
         self.__ui.historicoLayout.replaceWidget(wid_old, wid_new)
         wid_old.deleteLater()
+
+        # Agendados
+        self.__tableAgendados = Table(self.__ui.widAgendados, title='Registros Agendados', flags={TABLE_HEADER_DELETE})
+        wid_new = self.__tableAgendados
+        wid_old = self.__ui.widAgendadosTable
+        self.__ui.widAgendadosTable = wid_new
+
+        self.__ui.agendadosLayout.replaceWidget(wid_old, wid_new)
+        wid_old.deleteLater()
+
+        
 
         self.reset()
 

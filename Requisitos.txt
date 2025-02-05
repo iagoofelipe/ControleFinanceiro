@@ -1,0 +1,79 @@
+Requisitos Funcionais
+
+- o sistema deverá conter uma área para cadastramento de registros
+- o sistema deverá conter uma área para visualizar os registros a partir de um intervalo de datas, por padrão, o mês atual
+- o sistema deverá exibir os registros com recorrência do mês atual onde o usuário poderá selecionar e executar ações em massa, como confirmar ou cancelar
+- caso um registro com recorrência seja confirmado antes da data agendada, entrará como um registro feito no momento da confirmação (ignora a data agendada)
+
+# Registros
+Representação financeira de uma transação.
+
+## Atributos
+- Data
+- Tipo (Entrada ou Saída)
+- Categorias
+- Conta
+- Título
+- Descrição
+
+- A data serve para programar quando o registro entrará em vigor, podendo ter uma recorrência
+- a recorrência terá um intervalo mínimo de um dia
+- a recorrência só entrará em vigor quando confirmada pelo usuário
+- caso a recorrência não seja confirmada, permanecerá pendente durante o mês vigente e será descartada após o praso
+- um registro com recorrência pode ser concelado a qualquer momento
+- o sistema deve possuir uma área para os registros com recorrência
+- podem ser categorizados, como forma de organização e agrupamento
+- pode possuir uma conta bancária (fictícia ou real) onde foi movimentado
+
+# Entrada (Registro)
+Um registro de Tipo Entrada.
+
+# Saída (Registro)
+Um registro de Tipo Saída.
+
+# Categoria
+Descrição utilizada para agrupar Registros.
+
+## Atributos
+- Nome
+- Descrição
+
+- A categoria de um registro indifere seu Tipo.
+
+# Conta
+Conta bancária, a qual armazena cartões e registros.
+
+## Atributos
+- Nome
+- Descrição
+- Cartões
+- registros
+
+- pode possuir um conjunto de cartões de crédito
+- pode possuir um conjunto de registros
+
+# Cartão
+Cartão de crédito.
+
+## Atributos
+- Conta
+- Nome
+- Numeração (4 últimos dígitos)
+- Registros
+- Data Vencimento
+- Data Fechamento
+- Limite
+
+- possui uma data de vencimento
+- caso a data de vencimento seja anterior a data atual, o sistema deverá exibir como vencido e perguntar se o mesmo foi pago
+- o usuário deve possuir uma área para marcar as faturas fechadas como pagas
+- os registros de cartões podem ser Entradas (extornos e pagamentos antecipados) ou Saídas (compras)
+- uma saída poderá ser parcelada, onde o usuário poderá cadastrar o número de parcelas e o valor individual ou final (os valores individual e final devem coincidir de acordo com seus respectivos pesos)
+
+
+
+Requisitos Não Funcionais
+
+- o sistema será escrito em python, utilizando sqlite para armazenamento de dados
+- o sistema utilizará PySide6 para interface gráfica
+- o sistema funcionará apenas localmente, não dependendo de recursos externos

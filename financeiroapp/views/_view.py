@@ -3,8 +3,9 @@ from PySide6.QtWidgets import QMainWindow, QWidget
 from PySide6.QtGui import QGuiApplication
 
 from ..models._model import ModelApp
-from ..ui.pages._loading import LoadingPage
-from ..ui.pages._reg import RegistryPage
+from .pages._loading import LoadingPage
+from .pages._reg import RegistryPage
+from .pages._login import LoginPage
 from ..ui.auto.ui_MainWindow import Ui_MainWindow
 from ..backend._consts import *
 
@@ -17,6 +18,7 @@ class ViewApp(QObject):
         self.__currentNavBtn = None
         self.__loadingPage = LoadingPage(self, model)
         self.__regPage = RegistryPage(self, model)
+        self.__loginPage = LoginPage(self, model)
         self.__window = QMainWindow()
         self.__ui = Ui_MainWindow()
         self.__wid = None
@@ -34,28 +36,37 @@ class ViewApp(QObject):
     # -----------------------------------------------------------------
     # Métodos Públicos
     def initialize(self):
+        self.__model.logger.debug(f'ViewApp::initialize')
         self.events.initializationStarted.emit()
         
         QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
         self.setupPageById(PAGE_ID_LOADING)
         self.__window.resize(1000, 600)
-        self.__window.setWindowTitle('Controle Financeiro')
+        self.__window.setWindowTitle(WINDOW_TITLE)
 
         self.__window.show()
         self.events.initializationFinished.emit()
 
     def setupPageById(self, pageId:int):
+        self.__model.logger.debug(f'ViewApp::setupPageById <pageId={pageId}>')
 
         # para páginas que utilizam MainWindow
-        if pageId in MAINWINDOW_PAGES and self.__currentPage not in MAINWINDOW_PAGES:
-            self.__setupMainWindow()
+        if self.__currentPage not in WINDOW_PAGES:
+            self.__currentNavBtn = None
+
+            if pageId in WINDOW_PAGES:
+                self.__setupMainWindow()
 
         # definindo conteúdo da página
         if pageId == PAGE_ID_LOADING:
             self.__window.setCentralWidget(self.__loadingPage.setup(None))
-            self.__currentNavBtn = None  # não utiliza MainWindow
+            self.__window.setWindowTitle(WINDOW_TITLE)
 
-        elif pageId in MAINWINDOW_PAGES:
+        elif pageId == PAGE_ID_LOGIN:
+            self.__window.setCentralWidget(self.__loginPage.setup(None))
+            self.__window.setWindowTitle(WINDOW_TITLE + ' | Login')
+
+        elif pageId in WINDOW_PAGES:
             self.__changeMainWindowContent(pageId)
 
         else:
@@ -69,6 +80,9 @@ class ViewApp(QObject):
            return self.__loadingPage
         else:
             raise ValueError(f'page id {pageId} undefined')
+        
+    def checkCurrentPageById(self, pageId:int) -> bool:
+        return self.__currentPage == pageId
 
     # -----------------------------------------------------------------
     # Métodos Privados
@@ -82,13 +96,17 @@ class ViewApp(QObject):
         self.__ui.btnReg.clicked.connect(lambda: self.setupPageById(PAGE_ID_REG))
 
     def __changeMainWindowContent(self, pageId:int):
+        windowTitle = WINDOW_TITLE
+
         if pageId == PAGE_ID_HOME:
             wid_new = QWidget(self.__wid)
             navBtn = self.__ui.btnHome
+            windowTitle += ' | Home'
 
         elif pageId == PAGE_ID_REG:
             wid_new = self.__regPage.setup(self.__wid)
             navBtn = self.__ui.btnReg
+            windowTitle += ' | Registros'
 
         else:
             raise ValueError(f'page id {pageId} is not a valid MainWindowPage')
@@ -104,3 +122,4 @@ class ViewApp(QObject):
         self.__ui.mainLayout.replaceWidget(wid_old, wid_new)
         wid_old.deleteLater()
         navBtn.setEnabled(False)
+        self.__window.setWindowTitle(windowTitle)

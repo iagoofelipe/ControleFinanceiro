@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QWidget
-from typing import Iterable
 
 from ..auto.ui_table import Ui_Table 
 from ...backend._consts import *

@@ -12,7 +12,9 @@ class ControllerAppEvents(QObject):
 
 class ModelAppEvents(QObject):
     initializationStarted = Signal()
-    initializationFinished = Signal()
+    initializationFinished = Signal(bool)
+    loginRequired = Signal(str, str, bool)
+    loginFinished = Signal(bool)
 
 class EventHandlerApp(QObject):
     def __init__(self, parent:QObject):
