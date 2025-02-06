@@ -3,32 +3,18 @@ from threading import Thread
 import logging
 from configparser import ConfigParser
 
-# MySQL
-from mysql.connector import connect
-from mysql.connector.errors import ProgrammingError
-from mysql.connector import MySQLConnection
-from mysql.connector.cursor import MySQLCursor
-
+from .. import api
 from ..backend._events import EventHandlerApp
 from ..backend._consts import *
 from ..backend import _tools as tools
 
 class ModelApp(QObject):
-    __conn:MySQLConnection = None
-    __cursor:MySQLCursor = None
-    __config:ConfigParser = None
-    __connParams = {
-            'host': DATABASE_HOST,
-            'user': DATABASE_USER,
-            'password': DATABASE_PASSWORD,
-            'database': DATABASE_SCHEMA,
-        }
-
     def __init__(self, parent:QObject):
         super().__init__(parent, objectName='ModelApp')
         self.__eventHandler = EventHandlerApp(self)
         self.__events = self.__eventHandler.model
-        self.__userId = None
+        self.__api = api.FinanceiroAPI()
+        self.__config = ConfigParser()
         self.__logger = logging.getLogger('FinanceiroApp')
         logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s %(levelname)s::%(name)s] %(message)s', datefmt='%H:%M:%S')
 
@@ -49,6 +35,10 @@ class ModelApp(QObject):
     @property
     def config(self):
         return self.__config
+    
+    @property
+    def api(self):
+        return self.__api
 
     # -----------------------------------------------------------------
     # Métodos Públicos
@@ -57,22 +47,12 @@ class ModelApp(QObject):
         self.events.initializationStarted.emit()
 
         def func():
-            success = True
-            self.__config = ConfigParser()
             self.__config.read('config.ini')
 
             if 'Login' not in self.__config:
-                self.__rememberCredentials(False)
+                self.__rememberCredentials(False) # gerando valores-padrão para objeto config
 
-            try:
-                self.__conn = connect(**self.__connParams)
-                self.__cursor = self.__conn.cursor()
-
-            except ProgrammingError:
-                self.__conn = None
-                success = False
-
-            self.events.initializationFinished.emit(success)
+            self.events.initializationFinished.emit(self.__api.connect(DATABASE_PARAMS))
 
         Thread(target=func).start()
     
@@ -80,31 +60,22 @@ class ModelApp(QObject):
         self.events.loginRequired.emit(username, password, remember)
         self.logger.debug(f'ModelApp::login <username={username}, password={password}, remember={remember}>')
         
-        if not self.__conn.is_connected():
+        if not self.__api.isConnected():
             self.events.loginFinished.emit(False)
             return
         
-        self.__cursor.execute('SELECT id FROM user WHERE username=%s AND password=%s', (username, password))
-        r = self.__cursor.fetchone()
-        success = r is not None
+        success = self.__api.login(username, password)
 
-        if success:
-            self.__rememberCredentials(remember, username, password)
-
-        self.__userId = r[0] if success else None
+        self.__rememberCredentials(success and remember, username, password)
         self.events.loginFinished.emit(success)
                 
     def getCurrentUserName(self) -> str | None:
-        if self.__userId is None or not self.__conn.is_connected():
+        if not self.__api.isLogged():
             return
         
-        self.__cursor.execute('SELECT first_name, last_name FROM user WHERE id=%s', (self.__userId, ))
-        r = self.__cursor.fetchone()
-        if r is None:
-            raise ValueError('invalid userId')
-        
-        return ' '.join(r)
-    
+        user = self.__api.getCurrentUser()
+        return user.first_name + ' ' + user.last_name
+
     def getRememberUsername(self) -> str:
         username = tools.decrypt(self.config.get('Login', 'username'))
         return username if username else ''

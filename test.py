@@ -1,38 +1,24 @@
-from financeiroapp.api import FinanceiroAPI
-from financeiroapp.api.consts import *
-from uuid import uuid4
+from mysql.connector import connect
 
-api = FinanceiroAPI()
+params = dict(host='localhost', database='world', password='1234', user='test')
+conn = connect(**params)
+cursor = conn.cursor()
 
-if not api.connect(host='localhost', database='financeiro', password='1234', user='test'):
-    print('connection error')
-    exit()
+# length = 10
+# limit = 3
+# interval = 1 # [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+# values = list(range(1, 11))
 
-# caso não haja este usuário
-if not api.checkCredentials('iago', '1234'):
-    print('user created', api.createUser('iago', '1234', 'Iago', 'Carvalho'))
+cursor.execute('SELECT COUNT(*) FROM country')
+length = cursor.fetchone()[0] # 239
+limit = 10
+interval = 23
 
-if not api.login('iago', '1234'):
-    print('invalid credentials')
-    exit()
+intervals = (length // limit) + (length % limit != 0)
+start = interval * limit
+num = limit
 
-print('current user', api.getCurrentUser())
+print(f'LIMT {start}, {num}')
 
-# bank = api.createBank('Nubank')
-# print(bank, bank.name)
-
-# card = api.createCard('4094', 5, 10, 1500, bank.id)
-# print(card, card.num)
-
-# reg = api.createRegistry(REG_TYPE_IN, 'aulas de piano', 200.30, dt.datetime.now(), 'aluna X')
-# reg = api.createRegistry(REG_TYPE_OUT, 'livro artes', 40.50, dt.datetime.now(), bank_id=bank.id)
-# reg = api.createRegistry(REG_TYPE_OUT, 'lanche', 11.50, dt.datetime.now(), card_id=card.id)
-
-
-reg = api.getRegistry(2)
-print(reg, f'title: "{reg.title}", value: {reg.value}')
-reg.title = 'livro ' + str(uuid4()).upper()
-api.updateObject(reg)
-
-reg = api.getRegistry(reg.id)
-print(reg, f'title: "{reg.title}", value: {reg.value}')
+cursor.execute(f'SELECT Name FROM country LIMIT {start}, {num}')
+print(cursor.fetchall())

@@ -28,3 +28,9 @@ DATABASE_HOST = 'localhost'
 DATABASE_USER = 'test'
 DATABASE_PASSWORD = '1234'
 DATABASE_SCHEMA = 'financeiro'
+DATABASE_PARAMS = {
+    'host': DATABASE_HOST,
+    'user': DATABASE_USER,
+    'password': DATABASE_PASSWORD,
+    'database': DATABASE_SCHEMA,
+}

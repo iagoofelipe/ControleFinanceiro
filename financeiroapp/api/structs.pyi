@@ -1,15 +1,23 @@
 import datetime
 from typing import Any
 
-__all__ = ['REG_TYPE', 'AbstractTable', 'User', 'Bank', 'Card', 'Registry']
+__all__ = ['REG_TYPE', 'AbstractTable', 'NavigationTableInfo', 'User', 'Bank', 'Card', 'Registry']
 
 REG_TYPE = int
 
-class AbstractTable:
+class AbstractObject:
+    ATTRIBUTES:tuple[str]
+
+class AbstractTable(AbstractObject):
     COLUMNS:tuple[str]
     TABLE:str
 
     def getValues(self) -> dict[str, Any]: ...
+
+class NavigationTableInfo:
+    num_intervals:int
+    length:int
+    limit:int
 
 class User(AbstractTable):
     id:int

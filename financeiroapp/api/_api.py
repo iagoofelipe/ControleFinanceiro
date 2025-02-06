@@ -12,7 +12,13 @@ class FinanceiroAPI:
         self.__currentUser = None
 
     # -----------------------------------------------
-    # Métodos Públicos
+    #region Métodos Públicos
+    def isLogged(self):
+        return self.__currentUser is not None
+
+    def isConnected(self):
+        return self.__conn.is_connected() if self.__conn is not None else False
+    
     def login(self, username, password):
         self.__checkConnection()
         
@@ -26,12 +32,6 @@ class FinanceiroAPI:
         self.__currentUser = self.getUser(r[0])
         return True
     
-    def checkCredentials(self, username, password):
-        self.__checkConnection()
-        
-        self.__cursor.execute('SELECT id FROM user WHERE username=%s AND password=%s', (username, password))
-        return self.__cursor.fetchone() is not None
-
     def connect(self, **db_params):
         try:
             self.__conn = connect(**db_params)
@@ -43,14 +43,34 @@ class FinanceiroAPI:
 
         self.__cursor = self.__conn.cursor()
         return True
-    
-    def isLogged(self):
-        return self.__currentUser is not None
 
-    def isConnected(self):
-        return self.__conn.is_connected() if self.__conn is not None else False
+    def checkCredentials(self, username, password):
+        self.__checkConnection()
+        
+        self.__cursor.execute('SELECT id FROM user WHERE username=%s AND password=%s', (username, password))
+        return self.__cursor.fetchone() is not None
 
-    # create
+    def updateObject(self, instance_of_obj):
+        obj = instance_of_obj
+        self.__checkSubclass(type(obj))
+        
+        str_keyParam = tools.generateStrKeyParams(obj.COLUMNS)
+        self.__cursor.execute(f'UPDATE {obj.TABLE} SET {str_keyParam} WHERE (id={obj.id})', tuple(obj.getValues().values()))
+        self.__conn.commit()
+
+    def deleteObject(self, instance_of_obj):
+        obj = instance_of_obj
+        self.__checkSubclass(type(obj))
+
+        self.__cursor.execute(f'DELETE FROM {obj.TABLE} WHERE (id=%s)', (obj.id, ))
+        self.__conn.commit()
+
+    def countTable(self, typeof):
+        self.__checkSubclass(typeof)
+        self.__cursor.execute(f'SELECT COUNT(*) FROM {typeof.TABLE}')
+        return self.__cursor.fetchone()[0]        
+
+    #region create
     def createUser(self, *args):
         # verificando se já existe um usuário com esse username
         self.__cursor.execute(f'SELECT id FROM user WHERE username=%s', (args[0], ))
@@ -81,30 +101,30 @@ class FinanceiroAPI:
         args = (type, title, value, datetime, description, self.__currentUser.id, bank_id, card_id)
         return self.__create(args, Registry)
     
-    # get
-    def getCurrentUser(self):
-        return self.__currentUser
-    
+    #endregion
+
+    #region get
+    def getCurrentUser(self): return self.__currentUser
     def getUser(self, id): return self.__getObject(id, User)
     def getBank(self, id): return self.__getObject(id, Bank)
     def getCard(self, id): return self.__getObject(id, Card)
     def getRegistry(self, id): return self.__getObject(id, Registry)
+    
+    def getNavigationTableInfo(self, typeof, limit=DB_ROWS_LIMIT):
+        self.__checkConnection()
+        self.__checkSubclass(typeof)
 
-    def updateObject(self, obj):
-        self.__checkSubclass(type(obj))
-        
-        str_keyParam = tools.generateStrKeyParams(obj.COLUMNS)
-        self.__cursor.execute(f'UPDATE {obj.TABLE} SET {str_keyParam} WHERE (id={obj.id})', tuple(obj.getValues().values()))
-        self.__conn.commit()
+        self.__cursor.execute(f'SELECT COUNT(*) FROM {typeof.TABLE}')
+        length = self.__cursor.fetchone()[0]
+        num_intervals = (length // limit) + (length % limit != 0)
 
-    def deleteObject(self, obj):
-        self.__checkSubclass(type(obj))
+        return NavigationTableInfo(num_intervals, length, limit)
 
-        self.__cursor.execute(f'DELETE FROM {obj.TABLE} WHERE (id=%s)', (obj.id, ))
-        self.__conn.commit()
+    #endregion
 
+    #endregion
     # -----------------------------------------------
-    # Métodos Privados
+    #region Métodos Privados
     def __checkSubclass(self, typeof):
         if not issubclass(typeof, AbstractTable):
             raise TypeError('o objeto deve ser uma subclasse de AbstractTable')
@@ -139,5 +159,6 @@ class FinanceiroAPI:
 
         return self.__getObject(self.__cursor.lastrowid, typeof)
     
+    #endregion
     # -----------------------------------------------
     
