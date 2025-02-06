@@ -90,15 +90,15 @@ class Ui_RegistryPage(object):
         self.horizontalLayout.setSpacing(10)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.radioButton = QRadioButton(self.widget)
-        self.radioButton.setObjectName(u"radioButton")
+        self.radioBtnEntrada = QRadioButton(self.widget)
+        self.radioBtnEntrada.setObjectName(u"radioBtnEntrada")
 
-        self.horizontalLayout.addWidget(self.radioButton)
+        self.horizontalLayout.addWidget(self.radioBtnEntrada)
 
-        self.radioButton_2 = QRadioButton(self.widget)
-        self.radioButton_2.setObjectName(u"radioButton_2")
+        self.radionBtnSaida = QRadioButton(self.widget)
+        self.radionBtnSaida.setObjectName(u"radionBtnSaida")
 
-        self.horizontalLayout.addWidget(self.radioButton_2)
+        self.horizontalLayout.addWidget(self.radionBtnSaida)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -123,75 +123,79 @@ class Ui_RegistryPage(object):
         self.label.setObjectName(u"label")
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
+        font1 = QFont()
+        font1.setPointSize(13)
+        self.label.setFont(font1)
 
         self.gridLayout.addWidget(self.label, 0, 0, 1, 2)
 
-        self.doubleSpinBox = QDoubleSpinBox(self.frame)
-        self.doubleSpinBox.setObjectName(u"doubleSpinBox")
-        self.doubleSpinBox.setMinimum(1.000000000000000)
-        self.doubleSpinBox.setMaximum(999999999.990000009536743)
+        self.doubleSpinValor = QDoubleSpinBox(self.frame)
+        self.doubleSpinValor.setObjectName(u"doubleSpinValor")
+        self.doubleSpinValor.setMinimum(1.000000000000000)
+        self.doubleSpinValor.setMaximum(999999999.990000009536743)
 
-        self.gridLayout.addWidget(self.doubleSpinBox, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.doubleSpinValor, 4, 1, 1, 1)
 
         self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
 
         self.gridLayout.addWidget(self.label_2, 3, 0, 1, 1)
 
-        self.lineEdit_2 = QLineEdit(self.frame)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setClearButtonEnabled(True)
+        self.lineDescricao = QLineEdit(self.frame)
+        self.lineDescricao.setObjectName(u"lineDescricao")
+        self.lineDescricao.setClearButtonEnabled(True)
 
-        self.gridLayout.addWidget(self.lineEdit_2, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.lineDescricao, 5, 1, 1, 1)
 
         self.label_3 = QLabel(self.frame)
         self.label_3.setObjectName(u"label_3")
 
         self.gridLayout.addWidget(self.label_3, 4, 0, 1, 1)
 
-        self.lineEdit = QLineEdit(self.frame)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setClearButtonEnabled(True)
+        self.lineTitulo = QLineEdit(self.frame)
+        self.lineTitulo.setObjectName(u"lineTitulo")
+        self.lineTitulo.setClearButtonEnabled(True)
 
-        self.gridLayout.addWidget(self.lineEdit, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.lineTitulo, 3, 1, 1, 1)
 
         self.label_7 = QLabel(self.frame)
         self.label_7.setObjectName(u"label_7")
 
         self.gridLayout.addWidget(self.label_7, 8, 0, 1, 1)
 
-        self.comboBox = QComboBox(self.frame)
-        self.comboBox.setObjectName(u"comboBox")
+        self.comboConta = QComboBox(self.frame)
+        self.comboConta.setObjectName(u"comboConta")
 
-        self.gridLayout.addWidget(self.comboBox, 6, 1, 1, 1)
+        self.gridLayout.addWidget(self.comboConta, 6, 1, 1, 1)
 
-        self.checkBox = QCheckBox(self.frame)
-        self.checkBox.setObjectName(u"checkBox")
+        self.cbRecorrencia = QCheckBox(self.frame)
+        self.cbRecorrencia.setObjectName(u"cbRecorrencia")
 
-        self.gridLayout.addWidget(self.checkBox, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.cbRecorrencia, 9, 0, 1, 1)
 
-        self.comboBox_2 = QComboBox(self.frame)
-        self.comboBox_2.setObjectName(u"comboBox_2")
+        self.comboCartao = QComboBox(self.frame)
+        self.comboCartao.setObjectName(u"comboCartao")
 
-        self.gridLayout.addWidget(self.comboBox_2, 7, 1, 1, 1)
+        self.gridLayout.addWidget(self.comboCartao, 7, 1, 1, 1)
 
         self.label_6 = QLabel(self.frame)
         self.label_6.setObjectName(u"label_6")
 
         self.gridLayout.addWidget(self.label_6, 7, 0, 1, 1)
 
-        self.spinBox = QSpinBox(self.frame)
-        self.spinBox.setObjectName(u"spinBox")
-        self.spinBox.setMinimum(1)
-        self.spinBox.setMaximum(100)
+        self.spinRecorrencia = QSpinBox(self.frame)
+        self.spinRecorrencia.setObjectName(u"spinRecorrencia")
+        self.spinRecorrencia.setMinimum(1)
+        self.spinRecorrencia.setMaximum(100)
 
-        self.gridLayout.addWidget(self.spinBox, 9, 1, 1, 1)
+        self.gridLayout.addWidget(self.spinRecorrencia, 9, 1, 1, 1)
 
-        self.dateTimeEdit = QDateTimeEdit(self.frame)
-        self.dateTimeEdit.setObjectName(u"dateTimeEdit")
-        self.dateTimeEdit.setCalendarPopup(True)
+        self.dtEditDatahora = QDateTimeEdit(self.frame)
+        self.dtEditDatahora.setObjectName(u"dtEditDatahora")
+        self.dtEditDatahora.setMinimumDateTime(QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)))
+        self.dtEditDatahora.setCalendarPopup(True)
 
-        self.gridLayout.addWidget(self.dateTimeEdit, 8, 1, 1, 1)
+        self.gridLayout.addWidget(self.dtEditDatahora, 8, 1, 1, 1)
 
         self.label_4 = QLabel(self.frame)
         self.label_4.setObjectName(u"label_4")
@@ -261,24 +265,24 @@ class Ui_RegistryPage(object):
     def retranslateUi(self, RegistryPage):
         RegistryPage.setWindowTitle(QCoreApplication.translate("RegistryPage", u"Form", None))
         self.label_9.setText(QCoreApplication.translate("RegistryPage", u"Hist\u00f3rico de Registros", None))
-        self.radioButton.setText(QCoreApplication.translate("RegistryPage", u"Entrada", None))
-        self.radioButton_2.setText(QCoreApplication.translate("RegistryPage", u"Sa\u00edda", None))
+        self.radioBtnEntrada.setText(QCoreApplication.translate("RegistryPage", u"Entrada", None))
+        self.radionBtnSaida.setText(QCoreApplication.translate("RegistryPage", u"Sa\u00edda", None))
         self.label_5.setText(QCoreApplication.translate("RegistryPage", u"Conta Banc\u00e1ria", None))
         self.label.setText(QCoreApplication.translate("RegistryPage", u"Cadastro de Registros", None))
-        self.doubleSpinBox.setPrefix(QCoreApplication.translate("RegistryPage", u"R$ ", None))
+        self.doubleSpinValor.setPrefix(QCoreApplication.translate("RegistryPage", u"R$ ", None))
         self.label_2.setText(QCoreApplication.translate("RegistryPage", u"T\u00edtulo", None))
         self.label_3.setText(QCoreApplication.translate("RegistryPage", u"Valor", None))
         self.label_7.setText(QCoreApplication.translate("RegistryPage", u"Data/Hora", None))
 #if QT_CONFIG(tooltip)
-        self.checkBox.setToolTip(QCoreApplication.translate("RegistryPage", u"Ao ativar a recorr\u00eancia, o registro ser\u00e1 agendado para ocorrer a cada N dias. \u00c9 poss\u00edvel visualiz\u00e1-los na tabela Registros Agendados", None))
+        self.cbRecorrencia.setToolTip(QCoreApplication.translate("RegistryPage", u"Ao ativar a recorr\u00eancia, o registro ser\u00e1 agendado para ocorrer a cada N dias. \u00c9 poss\u00edvel visualiz\u00e1-los na tabela Registros Agendados", None))
 #endif // QT_CONFIG(tooltip)
-        self.checkBox.setText(QCoreApplication.translate("RegistryPage", u"Ativar recorr\u00eancia", None))
+        self.cbRecorrencia.setText(QCoreApplication.translate("RegistryPage", u"Ativar recorr\u00eancia", None))
         self.label_6.setText(QCoreApplication.translate("RegistryPage", u"Cart\u00e3o", None))
 #if QT_CONFIG(tooltip)
-        self.spinBox.setToolTip(QCoreApplication.translate("RegistryPage", u"intervalo de recorr\u00eancia em dias", None))
+        self.spinRecorrencia.setToolTip(QCoreApplication.translate("RegistryPage", u"intervalo de recorr\u00eancia em dias", None))
 #endif // QT_CONFIG(tooltip)
-        self.spinBox.setSuffix(QCoreApplication.translate("RegistryPage", u" dia(s)", None))
-        self.dateTimeEdit.setDisplayFormat(QCoreApplication.translate("RegistryPage", u"HH:mm dd/MM/yyyy", None))
+        self.spinRecorrencia.setSuffix(QCoreApplication.translate("RegistryPage", u" dia(s)", None))
+        self.dtEditDatahora.setDisplayFormat(QCoreApplication.translate("RegistryPage", u"HH:mm dd/MM/yyyy", None))
         self.label_4.setText(QCoreApplication.translate("RegistryPage", u"Descri\u00e7\u00e3o", None))
         self.btnLimpar.setText(QCoreApplication.translate("RegistryPage", u"limpar", None))
         self.btnSalvar.setText(QCoreApplication.translate("RegistryPage", u"salvar", None))

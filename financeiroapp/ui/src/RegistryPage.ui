@@ -173,14 +173,14 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QRadioButton" name="radioButton">
+              <widget class="QRadioButton" name="radioBtnEntrada">
                <property name="text">
                 <string>Entrada</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton_2">
+              <widget class="QRadioButton" name="radionBtnSaida">
                <property name="text">
                 <string>Saída</string>
                </property>
@@ -224,13 +224,18 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>13</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Cadastro de Registros</string>
             </property>
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox">
+           <widget class="QDoubleSpinBox" name="doubleSpinValor">
             <property name="prefix">
              <string>R$ </string>
             </property>
@@ -250,7 +255,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="lineEdit_2">
+           <widget class="QLineEdit" name="lineDescricao">
             <property name="clearButtonEnabled">
              <bool>true</bool>
             </property>
@@ -264,7 +269,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineTitulo">
             <property name="clearButtonEnabled">
              <bool>true</bool>
             </property>
@@ -278,10 +283,10 @@
            </widget>
           </item>
           <item row="6" column="1">
-           <widget class="QComboBox" name="comboBox"/>
+           <widget class="QComboBox" name="comboConta"/>
           </item>
           <item row="9" column="0">
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="cbRecorrencia">
             <property name="toolTip">
              <string>Ao ativar a recorrência, o registro será agendado para ocorrer a cada N dias. É possível visualizá-los na tabela Registros Agendados</string>
             </property>
@@ -291,7 +296,7 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QComboBox" name="comboBox_2"/>
+           <widget class="QComboBox" name="comboCartao"/>
           </item>
           <item row="7" column="0">
            <widget class="QLabel" name="label_6">
@@ -301,7 +306,7 @@
            </widget>
           </item>
           <item row="9" column="1">
-           <widget class="QSpinBox" name="spinBox">
+           <widget class="QSpinBox" name="spinRecorrencia">
             <property name="toolTip">
              <string>intervalo de recorrência em dias</string>
             </property>
@@ -317,7 +322,17 @@
            </widget>
           </item>
           <item row="8" column="1">
-           <widget class="QDateTimeEdit" name="dateTimeEdit">
+           <widget class="QDateTimeEdit" name="dtEditDatahora">
+            <property name="minimumDateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2024</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
             <property name="displayFormat">
              <string>HH:mm dd/MM/yyyy</string>
             </property>

@@ -3,7 +3,7 @@ from threading import Thread
 import logging
 from configparser import ConfigParser
 
-from .. import api
+from ..api import FinanceiroAPI
 from ..backend._events import EventHandlerApp
 from ..backend._consts import *
 from ..backend import _tools as tools
@@ -13,7 +13,7 @@ class ModelApp(QObject):
         super().__init__(parent, objectName='ModelApp')
         self.__eventHandler = EventHandlerApp(self)
         self.__events = self.__eventHandler.model
-        self.__api = api.FinanceiroAPI()
+        self.__api = FinanceiroAPI('sqlite3')
         self.__config = ConfigParser()
         self.__logger = logging.getLogger('FinanceiroApp')
         logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s %(levelname)s::%(name)s] %(message)s', datefmt='%H:%M:%S')
@@ -45,16 +45,12 @@ class ModelApp(QObject):
     def initialize(self):
         self.logger.debug(f'ModelApp::initialize')
         self.events.initializationStarted.emit()
+        
+        self.__config.read('config.ini')
+        if 'Login' not in self.__config:
+            self.__rememberCredentials(False) # gerando valores-padrão para objeto config
 
-        def func():
-            self.__config.read('config.ini')
-
-            if 'Login' not in self.__config:
-                self.__rememberCredentials(False) # gerando valores-padrão para objeto config
-
-            self.events.initializationFinished.emit(self.__api.connect(DATABASE_PARAMS))
-
-        Thread(target=func).start()
+        self.events.initializationFinished.emit(self.__api.connect('database.db'))
     
     def login(self, username:str, password:str, remember:bool):
         self.events.loginRequired.emit(username, password, remember)
@@ -83,7 +79,6 @@ class ModelApp(QObject):
     def getRememberPassword(self) -> str:
         password = tools.decrypt(self.config.get('Login', 'password'))
         return password if password else ''
-
 
     # -----------------------------------------------------------------
     # Métodos Privados

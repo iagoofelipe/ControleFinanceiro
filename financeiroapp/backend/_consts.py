@@ -1,3 +1,5 @@
+from datetime import date as __date
+
 __id = 0
 def generateId():
     global __id
@@ -13,9 +15,10 @@ PAGE_ID_REG = generateId()
 WINDOW_PAGES = (PAGE_ID_HOME, PAGE_ID_REG)
 WINDOW_TITLE = 'Controle Financeiro'
 
+# General
 CRYPTO_KEY = "42333823303233455347532322493093"
 CONFIG_FILE = 'config.ini'
-CONFIG_FILE_VALUES = {'Login': {'username': '', 'password': '', 'remember': False}}
+CURRENT_DATE = __date.today()
 
 # Ui Components - Table
 TABLE_HEADER_TITLE = generateId()

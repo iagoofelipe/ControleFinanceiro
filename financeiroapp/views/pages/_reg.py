@@ -1,6 +1,8 @@
-from PySide6.QtCore import QObject, Signal, Qt
+from PySide6.QtCore import QObject, Signal, Qt, QDate
 from PySide6.QtWidgets import QWidget
+from typing import Iterable
 
+from ... import api
 from ...ui.auto.ui_RegistryPage import Ui_RegistryPage
 from ...backend._consts import *
 from ...models._model import ModelApp 
@@ -36,11 +38,34 @@ class RegistryPage(QObject):
         self.__ui.agendadosLayout.replaceWidget(wid_old, wid_new)
         wid_old.deleteLater()
 
-        
+        # definindo configurações
+        self.__ui.dtEditDatahora.setMaximumDate(QDate(CURRENT_DATE.year, 12, 31))
 
         self.reset()
 
         return self.__wid
     
     def reset(self):
-        pass
+        self.resetCadastros()
+
+    def resetCadastros(self):
+        self.__ui.radionBtnSaida.click()
+        self.__ui.lineTitulo.clear()
+        self.__ui.doubleSpinValor.setValue(1)
+        self.__ui.lineDescricao.clear()
+        self.__ui.comboConta.clear()
+        self.__ui.comboCartao.clear()
+        self.__ui.cbRecorrencia.setChecked(False)
+        self.__ui.spinRecorrencia.setValue(1)
+
+        # inserindo valores de ComboBox
+        self.updateBanks(self.__model.api.getAllObjects(api.structs.Bank))
+        self.updateCards(self.__model.getCards(api.structs.Card))
+
+    def updateBanks(self, banks:Iterable[api.structs.Bank]):
+        self.__banks = banks
+        self.__ui.comboConta.addItems([b.name for b in self.__banks])
+
+    def updateCards(self, cards:Iterable[api.structs.Card]):
+        self.__cards = cards
+        self.__ui.comboConta.addItems([b.name for b in self.__cards])

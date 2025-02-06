@@ -1,23 +1,15 @@
-# from mysql.connector import connect
-# from mysql.connector.errors import ProgrammingError
-import sqlite3
+from mysql.connector import connect
+from mysql.connector.errors import ProgrammingError
 from .structs import *
 from .consts import *
 from .errors import *
 from . import tools
 
 class FinanceiroAPI:
-    def __init__(self, db_engine):
+    def __init__(self):
         self.__conn = None
         self.__cursor = None
         self.__currentUser = None
-
-        match db_engine:
-            case 'sqlite3':
-                self.__param = '?'
-            
-            case 'mysql':
-                self.__param = '%s'
 
     # -----------------------------------------------
     #region Métodos Públicos
@@ -25,12 +17,12 @@ class FinanceiroAPI:
         return self.__currentUser is not None
 
     def isConnected(self):
-        return self.__conn is not None
+        return self.__conn.is_connected() if self.__conn is not None else False
     
     def login(self, username, password):
         self.__checkConnection()
         
-        self.__cursor.execute(f'SELECT id FROM user WHERE username={self.__param} AND password={self.__param}', (username, password))
+        self.__cursor.execute('SELECT id FROM user WHERE username=%s AND password=%s', (username, password))
         r = self.__cursor.fetchone()
 
         if r is None:
@@ -40,9 +32,9 @@ class FinanceiroAPI:
         self.__currentUser = self.getUser(r[0])
         return True
     
-    def connect(self, filename):
+    def connect(self, **db_params):
         try:
-            self.__conn = sqlite3.connect(filename)
+            self.__conn = connect(**db_params)
 
         except:
             self.__conn = None
@@ -55,14 +47,14 @@ class FinanceiroAPI:
     def checkCredentials(self, username, password):
         self.__checkConnection()
         
-        self.__cursor.execute(f'SELECT id FROM user WHERE username={self.__param} AND password={self.__param}', (username, password))
+        self.__cursor.execute('SELECT id FROM user WHERE username=%s AND password=%s', (username, password))
         return self.__cursor.fetchone() is not None
 
     def updateObject(self, instance_of_obj):
         obj = instance_of_obj
         self.__checkSubclass(type(obj))
         
-        str_keyParam = ', '.join(map(lambda x: f'`{x}`={self.__param}', obj.COLUMNS)) # tools.generateStrKeyParams(obj.COLUMNS)
+        str_keyParam = tools.generateStrKeyParams(obj.COLUMNS)
         self.__cursor.execute(f'UPDATE {obj.TABLE} SET {str_keyParam} WHERE (id={obj.id})', tuple(obj.getValues().values()))
         self.__conn.commit()
 
@@ -70,18 +62,18 @@ class FinanceiroAPI:
         obj = instance_of_obj
         self.__checkSubclass(type(obj))
 
-        self.__cursor.execute(f'DELETE FROM {obj.TABLE} WHERE (id={self.__param})', (obj.id, ))
+        self.__cursor.execute(f'DELETE FROM {obj.TABLE} WHERE (id=%s)', (obj.id, ))
         self.__conn.commit()
 
     def countTable(self, typeof):
         self.__checkSubclass(typeof)
         self.__cursor.execute(f'SELECT COUNT(*) FROM {typeof.TABLE}')
-        return self.__cursor.fetchone()[0]
+        return self.__cursor.fetchone()[0]        
 
     #region create
     def createUser(self, *args):
         # verificando se já existe um usuário com esse username
-        self.__cursor.execute(f'SELECT id FROM user WHERE username={self.__param}', (args[0], ))
+        self.__cursor.execute(f'SELECT id FROM user WHERE username=%s', (args[0], ))
         if self.__cursor.fetchone() is not None:
             raise ApiValueFoundError('já existe um usuário com esse username')
         
@@ -89,7 +81,7 @@ class FinanceiroAPI:
 
     def createBank(self, name, description=None):
         # verificando se já existe uma conta bancária com esse nome
-        self.__cursor.execute(f'SELECT id FROM bank WHERE name={self.__param}', (name, ))
+        self.__cursor.execute(f'SELECT id FROM bank WHERE name=%s', (name, ))
         if self.__cursor.fetchone() is not None:
             raise ApiValueFoundError('já existe uma conta bancária com esse nome')
         
@@ -98,7 +90,7 @@ class FinanceiroAPI:
         
     def createCard(self, num, dia_fechamento, dia_vencimento, limite, bank_id):
         # verificando se já existe um cartão com esse número para essa conta bancária
-        self.__cursor.execute(f'SELECT id FROM card WHERE num={self.__param} AND bank_id={self.__param}', (num, bank_id))
+        self.__cursor.execute(f'SELECT id FROM card WHERE num=%s AND bank_id=%s', (num, bank_id))
         if self.__cursor.fetchone() is not None:
             raise ApiValueFoundError('já existe um cartão com esse número para essa conta bancária')
 
@@ -113,8 +105,6 @@ class FinanceiroAPI:
 
     #region get
     def getCurrentUser(self): return self.__currentUser
-    def getAllObjects(self, typeof): return self.__getObject(None, typeof, False)
-    def getObject(self, id, typeof): return self.__getObject(id, typeof)
     def getUser(self, id): return self.__getObject(id, User)
     def getBank(self, id): return self.__getObject(id, Bank)
     def getCard(self, id): return self.__getObject(id, Card)
@@ -160,34 +150,23 @@ class FinanceiroAPI:
         if not self.isLogged():
             raise ApiUserNotAuthenticatedError()
         
-    def __getObject(self, id, typeof, unpackWhenOne=True):
+    def __getObject(self, id, typeof):
         if typeof not in (User, ):
             self.__checkUserLogged()
 
         self.__checkSubclass(typeof)
 
         str_cols, _ = tools.generateStrColumns(typeof.COLUMNS)
-
-        if id is None: # retornando todos os resultados
-            self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}`')
+        self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` WHERE id=%s', (id, ))
+        r = self.__cursor.fetchone()
+        if r is None:
+            raise ApiValueNotFoundError(f'dados não encontrados a partir do id {id}')
         
-        else:
-            self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` WHERE id={self.__param}', (id, ))
-
-        r = self.__cursor.fetchall()
-        if not r: # caso retorne None ou empty
-            raise ApiValueNotFoundError('dados não encontrados')
-        
-        data = [typeof(*v) for v in r]
-        
-        if unpackWhenOne and len(data) == 1:
-            return data[0]
-        
-        return data
+        return typeof(*r)
     
     def __create(self, args, typeof):
         str_cols, len_cols = tools.generateStrColumns(typeof.COLUMNS, True)
-        str_params = ','.join([self.__param for _ in range(len_cols)]) # tools.generateStrParams(len_cols)
+        str_params = tools.generateStrParams(len_cols)
         self.__cursor.execute(f'INSERT INTO `{typeof.TABLE}` ({str_cols}) VALUES ({str_params})', args)
         self.__conn.commit()
 

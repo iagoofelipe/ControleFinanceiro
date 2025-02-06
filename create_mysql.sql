@@ -28,7 +28,7 @@ CREATE TABLE `card` (
   `num` INT NOT NULL,
   `dia_fechamento` INT NOT NULL,
   `dia_vencimento` INT NOT NULL,
-  `limite` VARCHAR(45) NOT NULL DEFAULT '0',
+  `limite` DECIMAL(10,2) NOT NULL DEFAULT '0',
   `bank_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_card_bank_id`
