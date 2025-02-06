@@ -15,6 +15,7 @@ class AbstractTable(AbstractObject):
     def getValues(self) -> dict[str, Any]: ...
 
 class NavigationTableInfo:
+    interval:int
     num_intervals:int
     length:int
     limit:int

@@ -110,7 +110,7 @@ class FinanceiroAPI:
     def getCard(self, id): return self.__getObject(id, Card)
     def getRegistry(self, id): return self.__getObject(id, Registry)
     
-    def getNavigationTableInfo(self, typeof, limit=DB_ROWS_LIMIT):
+    def getNavigationTableInfo(self, typeof, interval=0, limit=DB_ROWS_LIMIT):
         self.__checkConnection()
         self.__checkSubclass(typeof)
 
@@ -118,7 +118,20 @@ class FinanceiroAPI:
         length = self.__cursor.fetchone()[0]
         num_intervals = (length // limit) + (length % limit != 0)
 
-        return NavigationTableInfo(num_intervals, length, limit)
+        return NavigationTableInfo(interval, num_intervals, length, limit)
+
+    def getValuesByIndexInterval(self, typeof, *, index_interval=None, info=None):
+        if info is None:
+            info = self.getNavigationTableInfo(typeof, index_interval)
+            
+        elif index_interval is not None:
+            info.interval = index_interval
+
+        str_cols, _ = tools.generateStrColumns(typeof.COLUMNS)
+        start = info.interval * info.limit
+
+        self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` LIMIT {start}, {info.limit}')
+        return info, [typeof(*r) for r in self.__cursor.fetchall()]
 
     #endregion
 

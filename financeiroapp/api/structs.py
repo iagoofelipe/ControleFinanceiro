@@ -7,6 +7,10 @@ class AbstractObject:
         for i, a in enumerate(self.ATTRIBUTES):
             self.__setattr__(a, args[i])
 
+    def __str__(self):
+        attrs = ', '.join(map(lambda x: f'{x}={self.__getattribute__(x)}', self.ATTRIBUTES))
+        return f'<{self.__class__.__name__} {attrs}>'
+    
     def __repr__(self):
         return self.__str__()
 
@@ -19,13 +23,14 @@ class AbstractTable(AbstractObject):
         super().__init__(*args)
 
     def __str__(self):
-        return f'<{self.__class__.__name__} id={self.id}>'
+        attr = self.COLUMNS[0]
+        return f'<{self.__class__.__name__} {attr}={self.__getattribute__(attr)}>'
     
     def getValues(self):
         return {col: self.__getattribute__(col) for col in self.COLUMNS}
 
 class NavigationTableInfo(AbstractObject):
-    ATTRIBUTES = ('num_intervals', 'length', 'limit')
+    ATTRIBUTES = ('interval', 'num_intervals', 'length', 'limit')
 
     def __init__(self, *args):
         super().__init__(*args)
