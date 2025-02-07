@@ -36,7 +36,6 @@ class Bank(AbstractTable):
 class Card(AbstractTable):
     id:int
     num:int
-    nome:str
     d_vencimento:int
     d_fechamento:int
     limite:int

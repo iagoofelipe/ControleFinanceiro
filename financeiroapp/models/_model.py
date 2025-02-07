@@ -2,6 +2,7 @@ from PySide6.QtCore import QObject
 from threading import Thread
 import logging
 from configparser import ConfigParser
+import os
 
 from ..api import FinanceiroAPI
 from ..backend._events import EventHandlerApp
@@ -13,7 +14,7 @@ class ModelApp(QObject):
         super().__init__(parent, objectName='ModelApp')
         self.__eventHandler = EventHandlerApp(self)
         self.__events = self.__eventHandler.model
-        self.__api = FinanceiroAPI('sqlite3')
+        self.__api = FinanceiroAPI(os.environ.get('DATABASE_ENGINE', 'sqlite3'))
         self.__config = ConfigParser()
         self.__logger = logging.getLogger('FinanceiroApp')
         logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s %(levelname)s::%(name)s] %(message)s', datefmt='%H:%M:%S')

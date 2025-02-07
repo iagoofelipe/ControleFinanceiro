@@ -15,6 +15,7 @@ class RegistryPage(QObject):
         self.__ui = Ui_RegistryPage()
         self.__wid = None
         self.__tableHistorico = None
+        self.__cards_by_bank = {}
 
     def setup(self, parent:QWidget) -> QWidget:
         self.__wid = QWidget(parent)
@@ -40,6 +41,7 @@ class RegistryPage(QObject):
 
         # definindo configurações
         self.__ui.dtEditDatahora.setMaximumDate(QDate(CURRENT_DATE.year, 12, 31))
+        self.__ui.comboConta.currentIndexChanged.connect(self.on_comboConta_currentIndexChanged)
 
         self.reset()
 
@@ -59,13 +61,31 @@ class RegistryPage(QObject):
         self.__ui.spinRecorrencia.setValue(1)
 
         # inserindo valores de ComboBox
-        self.updateBanks(self.__model.api.getAllObjects(api.structs.Bank))
-        self.updateCards(self.__model.getCards(api.structs.Card))
+        self.updateBanks(self.__model.api.getAllBanks())
+        # self.updateCards(self.__model.api.getAllObjects(api.structs.Card))
 
     def updateBanks(self, banks:Iterable[api.structs.Bank]):
         self.__banks = banks
+        self.__cards_by_bank.clear()
+        self.__ui.comboCartao.clear()
         self.__ui.comboConta.addItems([b.name for b in self.__banks])
 
     def updateCards(self, cards:Iterable[api.structs.Card]):
         self.__cards = cards
-        self.__ui.comboConta.addItems([b.name for b in self.__cards])
+        self.__ui.comboCartao.clear()
+        self.__ui.comboCartao.addItems([str(c.num) for c in self.__cards])
+
+    def on_comboConta_currentIndexChanged(self, index:int):
+        bank = self.__banks[index]
+
+        if bank in self.__cards_by_bank:
+            cards = self.__cards_by_bank[bank]
+        else:
+            print('getting cards to bank', bank.name)
+            cards = self.__model.api.getCardsByBankId(bank.id)
+            self.__cards_by_bank[bank] = cards
+
+        self.updateCards(cards)
+
+        
+        

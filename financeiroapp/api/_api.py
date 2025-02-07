@@ -85,11 +85,13 @@ class FinanceiroAPI:
         if self.__cursor.fetchone() is not None:
             raise ApiValueFoundError('já existe um usuário com esse username')
         
-        return self.__create(args, User, False)
+        return self.__create(args, User)
 
     def createBank(self, name, description=None):
+        self.__checkUserLogged()
+
         # verificando se já existe uma conta bancária com esse nome
-        self.__cursor.execute(f'SELECT id FROM bank WHERE name={self.__param}', (name, ))
+        self.__cursor.execute(f'SELECT id FROM bank WHERE name={self.__param} AND user_id={self.__param}', (name, self.__currentUser.id))
         if self.__cursor.fetchone() is not None:
             raise ApiValueFoundError('já existe uma conta bancária com esse nome')
         
@@ -97,6 +99,8 @@ class FinanceiroAPI:
         return self.__create(args, Bank)
         
     def createCard(self, num, dia_fechamento, dia_vencimento, limite, bank_id):
+        self.__checkUserLogged()
+
         # verificando se já existe um cartão com esse número para essa conta bancária
         self.__cursor.execute(f'SELECT id FROM card WHERE num={self.__param} AND bank_id={self.__param}', (num, bank_id))
         if self.__cursor.fetchone() is not None:
@@ -106,6 +110,8 @@ class FinanceiroAPI:
         return self.__create(args, Card)
 
     def createRegistry(self, type, title, value, datetime, description=None, bank_id=None, card_id=None):
+        self.__checkUserLogged()
+
         args = (type, title, value, datetime, description, self.__currentUser.id, bank_id, card_id)
         return self.__create(args, Registry)
     
@@ -113,12 +119,18 @@ class FinanceiroAPI:
 
     #region get
     def getCurrentUser(self): return self.__currentUser
-    def getAllObjects(self, typeof): return self.__getObject(None, typeof, False)
-    def getObject(self, id, typeof): return self.__getObject(id, typeof)
-    def getUser(self, id): return self.__getObject(id, User)
-    def getBank(self, id): return self.__getObject(id, Bank)
-    def getCard(self, id): return self.__getObject(id, Card)
-    def getRegistry(self, id): return self.__getObject(id, Registry)
+    # def getAllObjects(self, typeof): return self.__getObject(None, typeof, False)
+    def getObject(self, id, typeof): return self.__getObject(typeof, params=(id, ), where_str=f'id={self.__param}')
+    def getUser(self, id): return self.__getObject(User, params=(id, ), where_str=f'id={self.__param}')
+    def getBank(self, id): return self.__getObject(Bank, params=(id, ), where_str=f'id={self.__param}')
+    def getCard(self, id): return self.__getObject(Card, params=(id, ), where_str=f'id={self.__param}')
+    def getRegistry(self, id): return self.__getObject(Registry, params=(id, ), where_str=f'id={self.__param}')
+
+    def getCardsByBankId(self, bank_id): return self.__getObject(Card, False, (bank_id, ), f'bank_id={self.__param}')
+    
+    def getAllBanks(self):
+        user_id = self.__currentUser.id if self.__currentUser is not None else None
+        return self.__getObject(Bank, False, (user_id, ), f'user_id={self.__param}')
     
     def getNavigationTableInfo(self, typeof, interval=0, limit=DB_ROWS_LIMIT):
         self.__checkConnection()
@@ -132,7 +144,7 @@ class FinanceiroAPI:
 
     def getValuesByIndexInterval(self, typeof, *, index_interval=None, info=None):
         if info is None:
-            info = self.getNavigationTableInfo(typeof, index_interval)
+            info = self.getNavigationTableInfo(typeof)
             
         elif index_interval is not None:
             info.interval = index_interval
@@ -160,20 +172,25 @@ class FinanceiroAPI:
         if not self.isLogged():
             raise ApiUserNotAuthenticatedError()
         
-    def __getObject(self, id, typeof, unpackWhenOne=True):
+    def __getObject(self, typeof, unpackWhenOne=True, params=(), where_str=None):
         if typeof not in (User, ):
             self.__checkUserLogged()
 
         self.__checkSubclass(typeof)
 
         str_cols, _ = tools.generateStrColumns(typeof.COLUMNS)
+        cmd = f'SELECT {str_cols} FROM `{typeof.TABLE}`'
 
-        if id is None: # retornando todos os resultados
-            self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}`')
+        if where_str:
+            cmd += ' WHERE ' + where_str
         
-        else:
-            self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` WHERE id={self.__param}', (id, ))
+        # if id is None: # retornando todos os resultados
+        #     self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}`')
+        
+        # else:
+        #     self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` WHERE id={self.__param}', (id, ))
 
+        self.__cursor.execute(cmd, params)
         r = self.__cursor.fetchall()
         if not r: # caso retorne None ou empty
             raise ApiValueNotFoundError('dados não encontrados')
