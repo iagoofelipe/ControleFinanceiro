@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QFrame, QHBoxL
     QHeaderView, QLabel, QPushButton, QSizePolicy,
     QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
     QWidget)
-import resource_rc
+from . import resource_rc
 
 class Ui_Table(object):
     def setupUi(self, Table):

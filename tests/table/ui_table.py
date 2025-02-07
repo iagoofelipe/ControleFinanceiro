@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QFrame, QHBoxLayout,
-    QHeaderView, QLabel, QPushButton, QSizePolicy,
-    QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QFrame,
+    QHBoxLayout, QHeaderView, QLabel, QPushButton,
+    QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
+    QVBoxLayout, QWidget)
 import resource_rc
 
 class Ui_Table(object):
@@ -54,43 +54,32 @@ class Ui_Table(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
-        self.widBtns = QWidget(self.widHeader)
-        self.widBtns.setObjectName(u"widBtns")
-        sizePolicy.setHeightForWidth(self.widBtns.sizePolicy().hasHeightForWidth())
-        self.widBtns.setSizePolicy(sizePolicy)
-        self.widBtns.setMinimumSize(QSize(0, 0))
-        self.horizontalLayout_2 = QHBoxLayout(self.widBtns)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.btnConfirm = QPushButton(self.widBtns)
+        self.btnConfirm = QPushButton(self.widHeader)
         self.btnConfirm.setObjectName(u"btnConfirm")
         icon = QIcon()
         icon.addFile(u":/root/Assets/check-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnConfirm.setIcon(icon)
         self.btnConfirm.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnConfirm)
+        self.horizontalLayout.addWidget(self.btnConfirm)
 
-        self.btnEdit = QPushButton(self.widBtns)
+        self.btnEdit = QPushButton(self.widHeader)
         self.btnEdit.setObjectName(u"btnEdit")
         icon1 = QIcon()
         icon1.addFile(u":/root/Assets/pen-to-square-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnEdit.setIcon(icon1)
         self.btnEdit.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnEdit)
+        self.horizontalLayout.addWidget(self.btnEdit)
 
-        self.btnDelete = QPushButton(self.widBtns)
+        self.btnDelete = QPushButton(self.widHeader)
         self.btnDelete.setObjectName(u"btnDelete")
         icon2 = QIcon()
         icon2.addFile(u":/root/Assets/trash-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnDelete.setIcon(icon2)
         self.btnDelete.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnDelete)
-
-
-        self.horizontalLayout.addWidget(self.widBtns)
+        self.horizontalLayout.addWidget(self.btnDelete)
 
 
         self.verticalLayout.addWidget(self.widHeader)
@@ -125,6 +114,8 @@ class Ui_Table(object):
         self.tableWidget.setItem(1, 1, __qtablewidgetitem7)
         self.tableWidget.setObjectName(u"tableWidget")
         self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget.setShowGrid(True)
         self.tableWidget.setGridStyle(Qt.SolidLine)
         self.tableWidget.setCornerButtonEnabled(False)

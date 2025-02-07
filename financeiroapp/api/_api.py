@@ -208,7 +208,7 @@ class FinanceiroAPI:
         self.__cursor.execute(f'INSERT INTO `{typeof.TABLE}` ({str_cols}) VALUES ({str_params})', args)
         self.__conn.commit()
 
-        return self.__getObject(self.__cursor.lastrowid, typeof)
+        return self.__getObject(typeof, params=(self.__cursor.lastrowid, ), where_str=f'id={self.__param}')
     
     #endregion
     # -----------------------------------------------

@@ -46,7 +46,7 @@ class Table(QWidget):
             return
         
         self.setQuantityTitle(1, end, len_values)
-        self.__ui.tableWidget.
+        # self.__ui.tableWidget.
 
     def setTitle(self, title:str):
         self.__ui.labelTitle.setText(title)
