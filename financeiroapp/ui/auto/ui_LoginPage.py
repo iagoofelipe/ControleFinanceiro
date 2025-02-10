@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QGridLayout,
-    QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QHBoxLayout, QLabel, QLineEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
 class Ui_LoginPage(object):
     def setupUi(self, LoginPage):
@@ -47,13 +47,13 @@ class Ui_LoginPage(object):
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.frame)
-        self.verticalLayout.setSpacing(12)
+        self.verticalLayout.setSpacing(20)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(15, 15, 15, 15)
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
         font1 = QFont()
-        font1.setPointSize(16)
+        font1.setPointSize(21)
         self.label.setFont(font1)
         self.label.setAlignment(Qt.AlignCenter)
 
@@ -62,6 +62,7 @@ class Ui_LoginPage(object):
         self.lineUsername = QLineEdit(self.frame)
         self.lineUsername.setObjectName(u"lineUsername")
         self.lineUsername.setMaxLength(45)
+        self.lineUsername.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.lineUsername)
 
@@ -69,13 +70,30 @@ class Ui_LoginPage(object):
         self.linePassword.setObjectName(u"linePassword")
         self.linePassword.setMaxLength(45)
         self.linePassword.setEchoMode(QLineEdit.Password)
+        self.linePassword.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout.addWidget(self.linePassword)
 
-        self.cbRemember = QCheckBox(self.frame)
+        self.widget = QWidget(self.frame)
+        self.widget.setObjectName(u"widget")
+        self.horizontalLayout = QHBoxLayout(self.widget)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_3)
+
+        self.cbRemember = QCheckBox(self.widget)
         self.cbRemember.setObjectName(u"cbRemember")
 
-        self.verticalLayout.addWidget(self.cbRemember)
+        self.horizontalLayout.addWidget(self.cbRemember)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_4)
+
+
+        self.verticalLayout.addWidget(self.widget)
 
         self.btnLogin = QPushButton(self.frame)
         self.btnLogin.setObjectName(u"btnLogin")

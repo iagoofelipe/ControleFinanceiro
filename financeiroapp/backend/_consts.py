@@ -22,9 +22,12 @@ CURRENT_DATE = __date.today()
 
 # Ui Components - Table
 TABLE_HEADER_TITLE = generateId()
-TABLE_HEADER_EDIT = generateId()
-TABLE_HEADER_CONFIRM = generateId()
-TABLE_HEADER_DELETE = generateId()
+TABLE_HEADER_BTN_EDIT = generateId()
+TABLE_HEADER_BTN_CONFIRM = generateId()
+TABLE_HEADER_BTN_DELETE = generateId()
+TABLE_HEADER_ALL_BTNS = generateId()
+
+DATABASE_TABLE_HEADERS_REGISTRY = ('Título', 'Tipo', 'Valor', 'Data/Hora', 'Descrição', 'Conta Bancária', 'Cartão')
 
 # Database
 DATABASE_HOST = 'localhost'

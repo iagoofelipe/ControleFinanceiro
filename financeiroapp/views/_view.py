@@ -12,6 +12,8 @@ from ..backend._consts import *
 class ViewApp(QObject):
     def __init__(self, parent:QObject, model:ModelApp):
         super().__init__(parent, objectName='ViewApp')
+        QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
+        
         self.__model = model
         self.__events = model.eventHandler.view
         self.__currentPage = None
@@ -39,7 +41,6 @@ class ViewApp(QObject):
         self.__model.logger.debug(f'ViewApp::initialize')
         self.events.initializationStarted.emit()
         
-        QGuiApplication.styleHints().setColorScheme(Qt.ColorScheme.Light)
         self.setupPageById(PAGE_ID_LOADING)
         self.__window.resize(1000, 600)
         self.__window.setWindowTitle(WINDOW_TITLE)

@@ -1,10 +1,10 @@
 from PySide6.QtCore import QObject
-from threading import Thread
 import logging
 from configparser import ConfigParser
 import os
 
-from ..api import FinanceiroAPI
+from .. import api as api
+from ..api.structs import Registry
 from ..backend._events import EventHandlerApp
 from ..backend._consts import *
 from ..backend import _tools as tools
@@ -14,7 +14,7 @@ class ModelApp(QObject):
         super().__init__(parent, objectName='ModelApp')
         self.__eventHandler = EventHandlerApp(self)
         self.__events = self.__eventHandler.model
-        self.__api = FinanceiroAPI(os.environ.get('DATABASE_ENGINE', 'sqlite3'))
+        self.__api = api.FinanceiroAPI(os.environ.get('DATABASE_ENGINE', 'sqlite3'))
         self.__config = ConfigParser()
         self.__logger = logging.getLogger('FinanceiroApp')
         logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s %(levelname)s::%(name)s] %(message)s', datefmt='%H:%M:%S')
@@ -80,6 +80,44 @@ class ModelApp(QObject):
     def getRememberPassword(self) -> str:
         password = tools.decrypt(self.config.get('Login', 'password'))
         return password if password else ''
+    
+    def getRegistriesToTable(self) -> tuple[list[Registry], list[list[str]]]:
+        """
+        consulta os registros e retorna estruturado para exibição na tabela
+        
+        retorno: registries, values
+        """
+        values = []
+        banks = {}
+        cards = {}
+        regs = self.api.getAllRegistries()
+
+        for reg in regs:
+            if reg.type == api.consts.REG_TYPE_IN:
+                _type = 'Entrada'
+            
+            elif reg.type == api.consts.REG_TYPE_OUT:
+                _type = 'Saída'
+
+            else:
+                raise ValueError('tipo de registro desconhecido')
+
+            if reg.bank_id not in banks and reg.bank_id is not None:
+                banks[reg.bank_id] = self.api.getBank(reg.bank_id).name
+
+            if reg.card_id not in banks and reg.card_id is not None:
+                cards[reg.card_id] = str(self.api.getCard(reg.card_id).num).zfill(4)
+            
+            str_dt = reg.datetime.strftime('%H:%M %d/%m/%Y')
+            desc = reg.description if reg.description else '-'
+            bank_name = banks.get(reg.bank_id, '-')
+            v_int, v_decimal = str(reg.value).split('.')
+            str_value = f'R$: {v_int},{v_decimal.ljust(2, '0')}'
+            card = cards.get(reg.card_id, '-')
+            
+            values.append([reg.title, _type, str_value, str_dt, desc, bank_name, card])
+
+        return regs, values
 
     # -----------------------------------------------------------------
     # Métodos Privados

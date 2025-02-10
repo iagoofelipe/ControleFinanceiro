@@ -15,14 +15,17 @@ class RegistryPage(QObject):
         self.__ui = Ui_RegistryPage()
         self.__wid = None
         self.__tableHistorico = None
+        self.__tableAgendados = None
         self.__cards_by_bank = {}
 
+    #------------------------------------------------------------------------------------
+    # Métodos Públicos
     def setup(self, parent:QWidget) -> QWidget:
         self.__wid = QWidget(parent)
         self.__ui.setupUi(self.__wid)
 
         # Historico
-        self.__tableHistorico = Table(self.__ui.widHistorico, title='Histórico de Registros', flags={TABLE_HEADER_DELETE})
+        self.__tableHistorico = Table(self.__ui.widHistorico, title='Histórico de Registros', flags={TABLE_HEADER_ALL_BTNS})
         wid_new = self.__tableHistorico
         wid_old = self.__ui.widHistoricoTable
         self.__ui.widHistoricoTable = wid_new
@@ -31,7 +34,7 @@ class RegistryPage(QObject):
         wid_old.deleteLater()
 
         # Agendados
-        self.__tableAgendados = Table(self.__ui.widAgendados, title='Registros Agendados', flags={TABLE_HEADER_DELETE})
+        self.__tableAgendados = Table(self.__ui.widAgendados, title='Registros Agendados')
         wid_new = self.__tableAgendados
         wid_old = self.__ui.widAgendadosTable
         self.__ui.widAgendadosTable = wid_new
@@ -49,6 +52,7 @@ class RegistryPage(QObject):
     
     def reset(self):
         self.resetCadastros()
+        self.updateTableHistorico()
 
     def resetCadastros(self):
         self.__ui.radionBtnSaida.click()
@@ -61,11 +65,15 @@ class RegistryPage(QObject):
         self.__ui.spinRecorrencia.setValue(1)
 
         # inserindo valores de ComboBox
-        self.updateBanks(self.__model.api.getAllBanks())
+        self.updateBanks()
         # self.updateCards(self.__model.api.getAllObjects(api.structs.Card))
 
-    def updateBanks(self, banks:Iterable[api.structs.Bank]):
-        self.__banks = banks
+    def updateTableHistorico(self):
+        self.__regs, values = self.__model.getRegistriesToTable()
+        self.__tableHistorico.setValues(values, DATABASE_TABLE_HEADERS_REGISTRY, 10)
+
+    def updateBanks(self):
+        self.__banks = self.__model.api.getAllBanks()
         self.__cards_by_bank.clear()
         self.__ui.comboCartao.clear()
         self.__ui.comboConta.addItems([b.name for b in self.__banks])
@@ -75,6 +83,8 @@ class RegistryPage(QObject):
         self.__ui.comboCartao.clear()
         self.__ui.comboCartao.addItems([str(c.num) for c in self.__cards])
 
+    #------------------------------------------------------------------------------------
+    # Eventos
     def on_comboConta_currentIndexChanged(self, index:int):
         bank = self.__banks[index]
 

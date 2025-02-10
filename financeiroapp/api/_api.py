@@ -1,6 +1,8 @@
 # from mysql.connector import connect
 # from mysql.connector.errors import ProgrammingError
 import sqlite3
+import datetime as dt
+
 from .structs import *
 from .consts import *
 from .errors import *
@@ -126,12 +128,6 @@ class FinanceiroAPI:
     def getCard(self, id): return self.__getObject(Card, params=(id, ), where_str=f'id={self.__param}')
     def getRegistry(self, id): return self.__getObject(Registry, params=(id, ), where_str=f'id={self.__param}')
 
-    def getCardsByBankId(self, bank_id): return self.__getObject(Card, False, (bank_id, ), f'bank_id={self.__param}')
-    
-    def getAllBanks(self):
-        user_id = self.__currentUser.id if self.__currentUser is not None else None
-        return self.__getObject(Bank, False, (user_id, ), f'user_id={self.__param}')
-    
     def getNavigationTableInfo(self, typeof, interval=0, limit=DB_ROWS_LIMIT):
         self.__checkConnection()
         self.__checkSubclass(typeof)
@@ -155,6 +151,10 @@ class FinanceiroAPI:
         self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` LIMIT {start}, {info.limit}')
         return info, [typeof(*r) for r in self.__cursor.fetchall()]
 
+    def getAllBanks(self): return self.__getObject(Bank, False, (self.__currentUser.id, ), f'user_id={self.__param}')
+    def getAllRegistries(self): return self.__getObject(Registry, False, (self.__currentUser.id, ), f'user_id={self.__param}')
+    def getCardsByBankId(self, bank_id): return self.__getObject(Card, False, (bank_id, ), f'bank_id={self.__param}')
+    
     #endregion
 
     #endregion
@@ -184,18 +184,18 @@ class FinanceiroAPI:
         if where_str:
             cmd += ' WHERE ' + where_str
         
-        # if id is None: # retornando todos os resultados
-        #     self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}`')
-        
-        # else:
-        #     self.__cursor.execute(f'SELECT {str_cols} FROM `{typeof.TABLE}` WHERE id={self.__param}', (id, ))
-
         self.__cursor.execute(cmd, params)
         r = self.__cursor.fetchall()
         if not r: # caso retorne None ou empty
             raise ApiValueNotFoundError('dados não encontrados')
         
         data = [typeof(*v) for v in r]
+
+        # tratando dados
+        if typeof == Registry:
+            for d in data:
+                d.value = float(d.value)
+                d.datetime = dt.datetime.strptime(d.datetime, '%Y-%m-%d %H:%M:%S')
         
         if unpackWhenOne and len(data) == 1:
             return data[0]

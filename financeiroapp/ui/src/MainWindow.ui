@@ -31,6 +31,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton { background-color: transparent }</string>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -94,15 +97,29 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnConfig">
-        <property name="text">
+        <property name="toolTip">
          <string>configurações</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/root/Assets/gear-solid.svg</normaloff>:/root/Assets/gear-solid.svg</iconset>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnLogout">
-        <property name="text">
+        <property name="toolTip">
          <string>sair</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resource.qrc">
+          <normaloff>:/root/Assets/right-from-bracket-solid.svg</normaloff>:/root/Assets/right-from-bracket-solid.svg</iconset>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -114,6 +131,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

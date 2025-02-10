@@ -15,17 +15,17 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QFrame, QHBoxLayout,
-    QHeaderView, QLabel, QPushButton, QSizePolicy,
-    QSpacerItem, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QFrame,
+    QGridLayout, QHBoxLayout, QHeaderView, QLabel,
+    QPushButton, QSizePolicy, QSpacerItem, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 from . import resource_rc
 
 class Ui_Table(object):
     def setupUi(self, Table):
         if not Table.objectName():
             Table.setObjectName(u"Table")
-        Table.resize(615, 529)
+        Table.resize(615, 521)
         self.verticalLayout = QVBoxLayout(Table)
         self.verticalLayout.setSpacing(10)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -54,43 +54,32 @@ class Ui_Table(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
-        self.widBtns = QWidget(self.widHeader)
-        self.widBtns.setObjectName(u"widBtns")
-        sizePolicy.setHeightForWidth(self.widBtns.sizePolicy().hasHeightForWidth())
-        self.widBtns.setSizePolicy(sizePolicy)
-        self.widBtns.setMinimumSize(QSize(0, 0))
-        self.horizontalLayout_2 = QHBoxLayout(self.widBtns)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.btnConfirm = QPushButton(self.widBtns)
+        self.btnConfirm = QPushButton(self.widHeader)
         self.btnConfirm.setObjectName(u"btnConfirm")
         icon = QIcon()
         icon.addFile(u":/root/Assets/check-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnConfirm.setIcon(icon)
         self.btnConfirm.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnConfirm)
+        self.horizontalLayout.addWidget(self.btnConfirm)
 
-        self.btnEdit = QPushButton(self.widBtns)
+        self.btnEdit = QPushButton(self.widHeader)
         self.btnEdit.setObjectName(u"btnEdit")
         icon1 = QIcon()
         icon1.addFile(u":/root/Assets/pen-to-square-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnEdit.setIcon(icon1)
         self.btnEdit.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnEdit)
+        self.horizontalLayout.addWidget(self.btnEdit)
 
-        self.btnDelete = QPushButton(self.widBtns)
+        self.btnDelete = QPushButton(self.widHeader)
         self.btnDelete.setObjectName(u"btnDelete")
         icon2 = QIcon()
         icon2.addFile(u":/root/Assets/trash-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.btnDelete.setIcon(icon2)
         self.btnDelete.setFlat(True)
 
-        self.horizontalLayout_2.addWidget(self.btnDelete)
-
-
-        self.horizontalLayout.addWidget(self.widBtns)
+        self.horizontalLayout.addWidget(self.btnDelete)
 
 
         self.verticalLayout.addWidget(self.widHeader)
@@ -102,7 +91,17 @@ class Ui_Table(object):
 
         self.verticalLayout.addWidget(self.line)
 
-        self.tableWidget = QTableWidget(Table)
+        self.widget_2 = QWidget(Table)
+        self.widget_2.setObjectName(u"widget_2")
+        self.gridLayout = QGridLayout(self.widget_2)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.frame = QFrame(self.widget_2)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.tableWidget = QTableWidget(self.frame)
         if (self.tableWidget.columnCount() < 2):
             self.tableWidget.setColumnCount(2)
         __qtablewidgetitem = QTableWidgetItem()
@@ -124,15 +123,52 @@ class Ui_Table(object):
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tableWidget.setItem(1, 1, __qtablewidgetitem7)
         self.tableWidget.setObjectName(u"tableWidget")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        self.tableWidget.setSizePolicy(sizePolicy1)
+        font1 = QFont()
+        font1.setFamilies([u"Segoe UI"])
+        font1.setPointSize(9)
+        self.tableWidget.setFont(font1)
+        self.tableWidget.setFrameShape(QFrame.NoFrame)
         self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget.setShowGrid(True)
         self.tableWidget.setGridStyle(Qt.SolidLine)
         self.tableWidget.setCornerButtonEnabled(False)
+        self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.verticalHeader().setCascadingSectionResizes(False)
 
-        self.verticalLayout.addWidget(self.tableWidget)
+        self.horizontalLayout_2.addWidget(self.tableWidget)
+
+
+        self.gridLayout.addWidget(self.frame, 1, 1, 1, 1)
+
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_3, 1, 0, 1, 1)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer, 0, 1, 1, 1)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_4, 1, 2, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer_2, 2, 1, 1, 1)
+
+
+        self.verticalLayout.addWidget(self.widget_2)
 
         self.widget = QWidget(Table)
         self.widget.setObjectName(u"widget")
+        self.widget.setStyleSheet(u"QPushButton { background-color: transparent; }")
         self.horizontalLayout_3 = QHBoxLayout(self.widget)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)

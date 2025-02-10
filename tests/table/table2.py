@@ -10,9 +10,9 @@ from ui_table import Ui_Table
 
 # Ui Components - Table
 TABLE_HEADER_TITLE = 1
-TABLE_HEADER_EDIT = 2
-TABLE_HEADER_CONFIRM = 3
-TABLE_HEADER_DELETE = 4
+TABLE_HEADER_BTN_EDIT = 2
+TABLE_HEADER_BTN_CONFIRM = 3
+TABLE_HEADER_BTN_DELETE = 4
 TABLE_HEADER_ALL_BTNS = 5
 
 def getNavigationInfo(length:int, limit:int, index:int) -> tuple[int, int, int, int, int]:
@@ -98,8 +98,9 @@ class Table(QWidget):
         self.__ui.line.hide()
         self.__ui.tableWidget.clear()
         self.__ui.label.clear()
-        self.__ui.btnPrv.setDisabled(True)
-        self.__ui.btnNext.setDisabled(True)
+
+        for btnName in ('Confirm', 'Edit', 'Delete', 'Prv', 'Next'):
+            self.__ui.__getattribute__('btn'+btnName).setDisabled(True)
 
     def setValues(self, values:Iterable[Iterable], headers:Sequence[str], limit=-1):
         self.__values = values
@@ -150,13 +151,13 @@ class Table(QWidget):
         self.__flags = flags
         self.reset()
 
-        if TABLE_HEADER_CONFIRM in flags or TABLE_HEADER_ALL_BTNS in flags:
+        if TABLE_HEADER_BTN_CONFIRM in flags or TABLE_HEADER_ALL_BTNS in flags:
             self.__ui.btnConfirm.show()
 
-        if TABLE_HEADER_EDIT in flags or TABLE_HEADER_ALL_BTNS in flags:
+        if TABLE_HEADER_BTN_EDIT in flags or TABLE_HEADER_ALL_BTNS in flags:
             self.__ui.btnEdit.show()
 
-        if TABLE_HEADER_DELETE in flags or TABLE_HEADER_ALL_BTNS in flags:
+        if TABLE_HEADER_BTN_DELETE in flags or TABLE_HEADER_ALL_BTNS in flags:
             self.__ui.btnDelete.show()
 
         if TABLE_HEADER_TITLE in flags:

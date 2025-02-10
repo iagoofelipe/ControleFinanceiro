@@ -17,6 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
     QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from . import resource_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -37,6 +38,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
+        self.frame.setStyleSheet(u"QPushButton { background-color: transparent }")
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.frame)
@@ -73,11 +75,19 @@ class Ui_MainWindow(object):
 
         self.btnConfig = QPushButton(self.frame)
         self.btnConfig.setObjectName(u"btnConfig")
+        icon = QIcon()
+        icon.addFile(u":/root/Assets/gear-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnConfig.setIcon(icon)
+        self.btnConfig.setFlat(True)
 
         self.verticalLayout.addWidget(self.btnConfig)
 
         self.btnLogout = QPushButton(self.frame)
         self.btnLogout.setObjectName(u"btnLogout")
+        icon1 = QIcon()
+        icon1.addFile(u":/root/Assets/right-from-bracket-solid.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnLogout.setIcon(icon1)
+        self.btnLogout.setFlat(True)
 
         self.verticalLayout.addWidget(self.btnLogout)
 
@@ -100,7 +110,11 @@ class Ui_MainWindow(object):
         self.btnHome.setText(QCoreApplication.translate("MainWindow", u"tela inicial", None))
         self.btnReg.setText(QCoreApplication.translate("MainWindow", u"registros", None))
         self.btnContaCartao.setText(QCoreApplication.translate("MainWindow", u"contas e cart\u00f5es", None))
-        self.btnConfig.setText(QCoreApplication.translate("MainWindow", u"configura\u00e7\u00f5es", None))
-        self.btnLogout.setText(QCoreApplication.translate("MainWindow", u"sair", None))
+#if QT_CONFIG(tooltip)
+        self.btnConfig.setToolTip(QCoreApplication.translate("MainWindow", u"configura\u00e7\u00f5es", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.btnLogout.setToolTip(QCoreApplication.translate("MainWindow", u"sair", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 

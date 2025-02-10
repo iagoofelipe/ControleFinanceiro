@@ -124,6 +124,7 @@ class Ui_Table(object):
 
         self.widget = QWidget(Table)
         self.widget.setObjectName(u"widget")
+        self.widget.setStyleSheet(u"QPushButton { background-color: transparent; }")
         self.horizontalLayout_3 = QHBoxLayout(self.widget)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
