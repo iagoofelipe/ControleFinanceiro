@@ -1,0 +1,8 @@
+USERNAME_MAX_LEN = 45
+PASSWORD_MAX_LEN = 255
+SETTINGS_FILE = 'settings.ini'
+
+# ui components
+UI_ID_LOGIN = 0
+UI_ID_MAIN = 1
+UI_ID_LOADING = 2
