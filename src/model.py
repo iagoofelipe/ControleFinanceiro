@@ -31,7 +31,7 @@ class AppModel(QObject):
         print(f'[AppModel::initialize] success {success}')
         self.initializationFinished.emit(success)
 
-    def login(self, username:str, password:str, save=False) -> bool:
+    def login(self, username:str, password:str, remember=False) -> bool:
         self.__cursor.execute('SELECT id, fullname FROM usuario WHERE username=%s AND password=%s', (username, password))
         data = self.__cursor.fetchone()
 
@@ -40,7 +40,7 @@ class AppModel(QObject):
 
         self.__user_id, self.__user_fullname = data
         
-        if save:
+        if remember:
             self.saveCredentials(username, password)
         else:
             self.clearCachedCredentials()
@@ -57,7 +57,7 @@ class AppModel(QObject):
 
     def getCachedCredentials(self) -> tuple[str, str] | None:
         if not self.__config.has_section('Credentials') or 'username' not in self.__config['Credentials'] or 'password' not in self.__config['Credentials']:
-            return False
+            return
         
         section = self.__config['Credentials']
 
@@ -67,9 +67,19 @@ class AppModel(QObject):
         if not self.__config.has_section('Credentials'):
             self.__config.add_section('Credentials')
         
-        self.__config['Credentials']['username'] = username
-        self.__config['Credentials']['password'] = password
-        self.__config['Credentials']['remember'] = 'True'
+        section = self.__config['Credentials']
+
+        if (
+            'username' in section and section['username'] == username \
+            and 'password' in section and section['password'] == password \
+            and 'remember' in section and section['remember'] == 'True' \
+            ):
+            return
+
+        print('[AppModel::saveCredentials] updating file...')
+        section['username'] = username
+        section['password'] = password
+        section['remember'] = 'True'
 
         with open(SETTINGS_FILE, 'w') as f:
             self.__config.write(f)
