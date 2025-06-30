@@ -8,6 +8,8 @@ from ...backend.consts import UI_ID_MAIN
 class MainForm(AbstractForm):
     ID = UI_ID_MAIN
 
+    logoutRequired = Signal()
+
     def __init__(self, parent:QObject=None):
         super().__init__(parent)
         self.__ui = Ui_MainForm()
@@ -17,6 +19,7 @@ class MainForm(AbstractForm):
 
         # configurando componentes
         self.__ui.setupUi(wid)
+        self.__ui.btnSair.clicked.connect(self.logoutRequired)
 
         return wid
     

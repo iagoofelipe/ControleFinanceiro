@@ -31,6 +31,11 @@ class AppModel(QObject):
         print(f'[AppModel::initialize] success {success}')
         self.initializationFinished.emit(success)
 
+    def logout(self):
+        self.__user_id = None
+        self.__user_fullname = None
+        self.clearCachedCredentials()
+
     def login(self, username:str, password:str, remember=False) -> bool:
         self.__cursor.execute('SELECT id, fullname FROM usuario WHERE username=%s AND password=%s', (username, password))
         data = self.__cursor.fetchone()

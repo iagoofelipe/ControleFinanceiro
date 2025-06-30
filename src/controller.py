@@ -11,10 +11,12 @@ class AppController(QObject):
         self.__view = view
 
         self.__loginForm = loginForm = view.loginForm()
+        self.__mainForm = mainForm = view.mainForm()
         self.__loadingForm = view.loadingForm()
 
         # conectando eventos
         loginForm.continueRequired.connect(self.on_loginForm_continueRequired)
+        mainForm.logoutRequired.connect(self.logout)
         model.initializationFinished.connect(self.on_model_initializationFinished)
         
 
@@ -37,6 +39,10 @@ class AppController(QObject):
             self.login(*self.__model.getCachedCredentials(), remember=True, setupLogin=True)
             return
         
+        self.__view.setupUiById(UI_ID_LOGIN)
+
+    def logout(self):
+        self.__model.logout()
         self.__view.setupUiById(UI_ID_LOGIN)
 
     def login(self, username:str, password:str, remember:bool, setupLogin=False):
